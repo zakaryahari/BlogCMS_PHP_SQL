@@ -40,12 +40,5 @@ L'objectif était de développer une solution **Back-End robuste en PHP natif**,
 | **Serveur Web** | **Apache** | Hébergement local via la suite XAMPP/WAMP/MAMP. |
 | **Versioning** | **Git / GitHub** | Gestion du code source, suivi des versions et documentation. |
 
----
-
-## 💡 Auteur du Projet
-👨‍💻 **[Votre Nom]**
-📧 [votre.email@exemple.com](mailto:votre.email@exemple.com)
-🌐 **GitHub** – [Lien du dépôt](#)
-📋 **Planification** – [Lien Trello/Jira](#) *(Lien vers votre tableau de gestion de projet)*
 
 *Projet réalisé dans le cadre de la formation.*
