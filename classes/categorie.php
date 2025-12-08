@@ -11,7 +11,7 @@
         }
 
         public function Add_new_categorie(){
-            $sql = "INSERT INTO utilisateur VALUES (:id_categorie,:libelle,:description)";
+            $sql = "INSERT INTO categorie VALUES (:id_categorie,:libelle,:description)";
 
             $query = $this->connection->prepare($sql);
 
