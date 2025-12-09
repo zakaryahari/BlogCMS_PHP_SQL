@@ -31,5 +31,23 @@
             }
             return false;
         }
+
+        public function login($username , $password){
+            $sql = "SELECT * FROM utilisateur WHERE username = :username AND mod_de_pass = :mod_de_pass";
+
+            $query = $this->connection->prepare($sql);
+
+            $username = htmlspecialchars(strip_tags($username));
+
+            $query->bindParam(":username",$username);
+            $query->bindParam(":mod_de_pass",$password);
+
+            $user = $query->fetch();
+
+            if ($user && password_verify($password, $user['mod_de_pass'])) {
+                return $user;
+            }
+            return false;
+        }
     }
 ?>
