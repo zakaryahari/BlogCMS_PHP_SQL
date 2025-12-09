@@ -6,22 +6,42 @@
     $connection = new Database();
     $db = $connection->getConnection();
 
-    // $user = new user();
+    $user = new user($db);
 
     $username_input = $_POST['username'];
+    
+    if ($_POST['confirm_password'] == $_POST['password']) {
+      $password_input = $_POST['confirm_password'];
 
-    $sql = "select * from utilisateur where username = :username";
+      $check = $user->login($username_input , $password_input);
+      
+      if ($check != false) {
+          echo "Username already exists!";
+      } else {
+          $user->username = $username_input;
+          $user->email = $_POST['email'];
+          $user->mod_de_pass = $password_input;
+          $user->date_inscription = date('Y-m-d');
+          $user->role = 'author';
 
-    $query = $db->prepare($sql);
-    $query->bindParam(":username",$username_input);
-
-    $query->execute();
-
-    if ($query->rowCount() > 0) {
-        echo "Username already exists!";
+          if ($user->Add_new_user()) {
+            echo "user created successfuly!!";
+          }
+          else {
+            echo "Failed to create user.";
+          }
+      }
     } else {
-        echo "Username available. Logic to INSERT user goes here.";
+      echo "Password incorrect";
     }
+
+    // $sql = "select * from utilisateur where username = :username";
+
+    // $query = $db->prepare($sql);
+    // $query->bindParam(":username",$username_input);
+
+    // $query->execute();
+
   }
 ?>
 <!DOCTYPE html>
