@@ -18,6 +18,11 @@
     } 
     elseif($check != false) {
 
+      session_start();
+      $_SESSION['username'] = $check['username'];
+      $_SESSION['user_role'] = $check['role'];
+      $_SESSION['user_email'] = $check['email'];
+
       if ($check['role'] == 'admin') {
         echo "hello admin";
         header('Location: ../index.html');
