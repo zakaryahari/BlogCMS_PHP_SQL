@@ -33,15 +33,16 @@
         }
 
         public function login($username , $password){
-            $sql = "SELECT * FROM utilisateur WHERE username = :username AND mod_de_pass = :mod_de_pass";
+            $sql = "SELECT * FROM utilisateur WHERE username = :username";
 
             $query = $this->connection->prepare($sql);
 
             $username = htmlspecialchars(strip_tags($username));
 
             $query->bindParam(":username",$username);
-            $query->bindParam(":mod_de_pass",$password);
-
+            
+            $query->execute();
+            
             $user = $query->fetch();
 
             if ($user && password_verify($password, $user['mod_de_pass'])) {
@@ -49,5 +50,6 @@
             }
             return false;
         }
+
     }
 ?>
