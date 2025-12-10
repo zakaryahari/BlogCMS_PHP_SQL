@@ -25,7 +25,7 @@
 
       if ($check['role'] == 'admin') {
         echo "hello admin";
-        header('Location: ../index.html');
+        header('Location: ../dashboard.php');
         exit();
       }
       else {
