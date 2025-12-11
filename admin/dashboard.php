@@ -9,12 +9,12 @@
       session_start();
       if (isset($_SESSION['username'])) {
         if ($_SESSION['user_role'] == 'author') {
-            header("Location: index.html");
+            header("Location: ../index.html");
             exit();
         }
       }
       else {
-          header("Location: ../../pages/login.php");
+          header("Location: ../pages/login.php");
           exit();
       }
       // echo "username : ". $_SESSION['username'] . "role : ". $_SESSION['user_role'] ;
