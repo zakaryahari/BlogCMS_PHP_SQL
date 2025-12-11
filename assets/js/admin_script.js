@@ -25,3 +25,29 @@ if (form_cancel_btn) {
     categoryModal.classList.add('hidden');
   });
 }
+
+// const categorie_table = document.getElementById('categorie_table');
+
+// if (categorie_table) {
+//   categorie_table.addEventListener('click', (e) => {
+//     if (e.target.getAttribute('aria-label') == 'Edit') {
+//       console.log(e.target.getAttribute('aria-label'));
+//     }
+//   });
+// }
+
+function openEditModal(button) {
+  // console.log(button.classList);
+  $modal_id_categorie = document.getElementById('modal_id_categorie');
+  $modal_libelle = document.getElementById('modal_libelle');
+  $modal_description = document.getElementById('modal_description');
+
+  $modal_id_categorie.value = button.getAttribute('data-id_categorie');
+  $modal_libelle.value = button.getAttribute('data-libelle');
+  $modal_description.value = button.getAttribute('data-description');
+  categoryModal.classList.remove('hidden');
+}
+
+function closeModal() {
+  categoryModal.classList.add('hidden');
+}
