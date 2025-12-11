@@ -11,11 +11,11 @@
         }
 
         public function Add_new_categorie(){
-            $sql = "INSERT INTO categorie VALUES (:id_categorie,:libelle,:description)";
+            $sql = "INSERT INTO categorie (libelle , description) VALUES (:libelle,:description)";
 
             $query = $this->connection->prepare($sql);
 
-            $query->bindParam(":id_categorie",$this->id_categorie);
+            // $query->bindParam(":id_categorie",$this->id_categorie);
             $query->bindParam(":libelle",$this->libelle);
             $query->bindParam(":description",$this->description);
 
