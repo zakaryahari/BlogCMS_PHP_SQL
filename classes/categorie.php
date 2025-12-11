@@ -25,5 +25,35 @@
             }
             return false;
         }
+
+        public function Get_categorie(){
+            $sql = "SELECT * FROM categorie where id_categorie = :id_categorie";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":id_categorie",$this->id_categorie);
+
+            if($query->execute()) {
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+                return $result;
+            }
+            return false;
+        }
+
+        public function Update_categorie(){
+            $sql = "UPDATE categorie SET libelle = :libelle , description = :description WHERE id_categorie = :id_categorie";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":id_categorie",$this->id_categorie);
+            $query->bindParam(":libelle",$this->libelle);
+            $query->bindParam(":description",$this->description);
+
+
+            if($query->execute()) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
