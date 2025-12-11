@@ -27,17 +27,30 @@
       if (isset($_POST['submit_category'])) {
         $categorie = new categorie($db);
 
+        $categorie->id_categorie = $_POST['id_categorie'];
         $categorie->libelle = $_POST['libelle'];
         $categorie->description = $_POST['description'];
 
         // $categorie->Add_new_categorie();
-        if ($categorie->Add_new_categorie()) {
-            echo "categorie created seccessfuly !!";
-            header("Location: categories.php"); 
-            exit();
+        if ($categorie->Get_categorie() == false) {
+            if ($categorie->Add_new_categorie()) {
+                echo "categorie created seccessfuly !!";
+                header("Location: categories.php"); 
+                exit();
+            }
+            else {
+                echo "there was a error creating this categorie";
+            }
         }
         else {
-            echo "there was a error creating this categorie";
+            if ($categorie->Update_categorie() != false) {
+                echo "categorie updated seccessfuly !!";
+                header("Location: categories.php"); 
+                exit();
+            }
+            else {
+                echo "there was a error creating this categorie";
+            }
         }
 
       }
@@ -190,7 +203,7 @@
                     </div>
                     <div class="w-full overflow-hidden rounded-lg shadow-xs">
                         <div class="w-full overflow-x-auto">
-                            <table class="w-full whitespace-no-wrap">
+                            <table id="categorie_table" class="w-full whitespace-no-wrap">
                                 <thead>
                                     <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                                         <th class="px-4 py-3">ID</th>
@@ -207,7 +220,7 @@
                                         <td class="px-4 py-3 text-sm max-w-xs truncate"><?php echo $row['description']; ?></td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center space-x-4 text-sm">
-                                                <button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit" data-id_categorie="<?php echo $row['id_categorie']; ?>" data-libelle="<?php echo $row['libelle']; ?>" data-description="<?php echo $row['description']; ?>" onclick="openEditModal(this)">
+                                                <button id="edit_btn" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit" data-id_categorie="<?php echo $row['id_categorie']; ?>" data-libelle="<?php echo $row['libelle']; ?>" data-description="<?php echo $row['description']; ?>" onclick="openEditModal(this)">
                                                     <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                                     </svg>
