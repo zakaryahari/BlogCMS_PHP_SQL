@@ -13,7 +13,7 @@
         }
 
         public function Add_new_user(){
-            $sql = "INSERT INTO utilisateur VALUES (:username,:email,:mod_de_pass,:date_inscription,:role)";
+            $sql = "INSERT INTO utilisateur (username, email, mod_de_pass, date_inscription, role) VALUES (:username, :email, :mod_de_pass, :date_inscription, :role)";
 
             $query = $this->connection->prepare($sql);
 
