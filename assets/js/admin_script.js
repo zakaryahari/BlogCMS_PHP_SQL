@@ -26,16 +26,6 @@ if (form_cancel_btn) {
   });
 }
 
-// const categorie_table = document.getElementById('categorie_table');
-
-// if (categorie_table) {
-//   categorie_table.addEventListener('click', (e) => {
-//     if (e.target.getAttribute('aria-label') == 'Edit') {
-//       console.log(e.target.getAttribute('aria-label'));
-//     }
-//   });
-// }
-
 function openEditModal(button) {
   // console.log(button.classList);
   $modal_id_categorie = document.getElementById('modal_id_categorie');
@@ -50,4 +40,42 @@ function openEditModal(button) {
 
 function closeModal() {
   categoryModal.classList.add('hidden');
+}
+
+// user
+
+const userModal = document.getElementById('userModal');
+
+if (userModal) {
+  userModal.addEventListener('click', (e) => {
+    if (e.target.id == 'userModal') {
+      userModal.classList.add('hidden');
+    }
+  });
+}
+
+const user_form_cancel_btn = document.getElementById('user_cancel_btn');
+
+if (user_form_cancel_btn) {
+  user_form_cancel_btn.addEventListener('click', () => {
+    userModal.classList.add('hidden');
+  });
+}
+
+function openEditUserModal(button) {
+  const modal_user_id = document.getElementById('modal_user_id');
+  const modal_user_username = document.getElementById('modal_user_username');
+  const modal_user_email = document.getElementById('modal_user_email');
+  const modal_user_role = document.getElementById('modal_user_role');
+
+  modal_user_id.value = button.getAttribute('data-id');
+  modal_user_username.value = button.getAttribute('data-username');
+  modal_user_email.value = button.getAttribute('data-email');
+  modal_user_role.value = button.getAttribute('data-role');
+
+  userModal.classList.remove('hidden');
+}
+
+function closeUserModal() {
+  userModal.classList.add('hidden');
 }
