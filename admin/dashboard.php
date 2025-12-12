@@ -50,15 +50,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Windmill Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
   <link rel="stylesheet" href="/BRIEF-8/assets/css/tailwind.output.css" />
+  
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
   <script src="/BRIEF-8/assets/js/init-alpine.js"></script>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+
+  <script>
+    window.dashboardData = {
+      totalUsers: <?php echo json_encode($Totalusers); ?>,
+      totalArticles: <?php echo json_encode($Totalarticle); ?>,
+      totalViews: <?php echo json_encode($Totalviews); ?>,
+      pendingComments: <?php echo json_encode($TotalPending); ?>
+    };
+    console.log("PHP Data Loaded:", window.dashboardData);
+  </script>
+
   <script src="/BRIEF-8/assets/js/charts-lines.js" defer></script>
   <script src="/BRIEF-8/assets/js/charts-pie.js" defer></script>
-  </head>
+</head>
   <body>
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
       <!-- Desktop sidebar -->
@@ -393,16 +405,13 @@
                 <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
                   <!-- Chart legend -->
                   <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
-                    <span>Shirts</span>
+                    <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span> <span>Articles</span>
                   </div>
                   <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
-                    <span>Shoes</span>
+                    <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span> <span>Users</span>
                   </div>
                   <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                    <span>Bags</span>
+                    <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span> <span>Pending Comments</span>
                   </div>
                 </div>
               </div>
