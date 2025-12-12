@@ -1,6 +1,8 @@
 <?php 
     require_once '../classes/database.php';
-    require_once '../classes/user.php';
+    require_once '../classes/article.php';
+    require_once '../classes/categorie.php';
+    require_once '../classes/commentaire.php';
 
     $connection = new Database();
     $db = $connection->getconnection();
@@ -16,14 +18,35 @@
         header("Location: ../login.php");
         exit();
     }
-
     $current_author = $_SESSION['username'];
 
-    $sql_MyRecent = "SELECT * FROM article WHERE username = :username ORDER BY date_creation DESC LIMIT 5";
-    $stmt = $db->prepare($sql_MyRecent);
+    $sql_MyArticles = "SELECT COUNT(*) FROM article WHERE username = :username";
+    $stmt = $db->prepare($sql_MyArticles);
     $stmt->bindParam(':username', $current_author);
     $stmt->execute();
-    $MyRecentArticles = $stmt->fetchAll();
+    $MyArticles = $stmt->fetchColumn();
+
+    $sql_MyViews = "SELECT SUM(view_count) FROM article WHERE username = :username";
+    $stmt = $db->prepare($sql_MyViews);
+    $stmt->bindParam(':username', $current_author);
+    $stmt->execute();
+    $MyViews = $stmt->fetchColumn();
+
+    $sql_MyComments = "SELECT COUNT(*) FROM commentaire c JOIN article a ON c.id_article = a.id_article WHERE a.username = :username";
+    $stmt = $db->prepare($sql_MyComments);
+    $stmt->bindParam(':username', $current_author);
+    $stmt->execute();
+    $MyTotalComments = $stmt->fetchColumn();
+
+    $sql_MyPendingArticles = "SELECT COUNT(*) FROM article WHERE username = :username AND status = 'pending'";
+    $stmt = $db->prepare($sql_MyPendingArticles);
+    $stmt->bindParam(':username', $current_author);
+    $stmt->execute();
+    $MyPendingArticles = $stmt->fetchColumn();
+
+    $article = new article($db);
+
+    $MyRecentArticles = $article->Get_Resent_article($current_author);
 
 ?>
 <!DOCTYPE html>
@@ -182,7 +205,7 @@
                 </div>
                 <div>
                   <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">My Articles</p>
-                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">12</p>
+                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200"><?php echo $MyArticles;?></p>
                 </div>
               </div>
               
@@ -194,7 +217,7 @@
                 </div>
                 <div>
                   <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Total Views</p>
-                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">3,450</p>
+                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200"><?php echo $MyViews;?></p>
                 </div>
               </div>
 
@@ -206,7 +229,7 @@
                 </div>
                 <div>
                   <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Total Comments</p>
-                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">85</p>
+                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200"><?php echo $MyTotalComments;?></p>
                 </div>
               </div>
 
@@ -218,7 +241,7 @@
                 </div>
                 <div>
                   <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Pending Articles</p>
-                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">2</p>
+                  <p class="text-lg font-semibold text-gray-700 dark:text-gray-200"><?php echo $MyPendingArticles;?></p>
                 </div>
               </div>
             </div>
@@ -237,32 +260,34 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    <?php foreach($MyRecentArticles as $row):?>
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                           <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                            <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max" alt="" loading="lazy" />
+                            <img class="object-cover w-full h-full rounded-full" src="<?php echo $row['image_url'];?>" alt="" loading="lazy" />
                             <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                           </div>
                           <div>
-                            <p class="font-semibold">Best Tech of 2024</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">10 min read</p>
+                            <p class="font-semibold"><?php echo $row['nom_article'];?></p>
+                            <!-- <p class="text-xs text-gray-600 dark:text-gray-400">10 min read</p> -->
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">Technology</td>
-                      <td class="px-4 py-3 text-sm">1,203</td>
+                      <td class="px-4 py-3 text-sm"><?php echo $row['category_name'];?></td>
+                      <td class="px-4 py-3 text-sm"><?php echo $row['view_count'];?></td>
                       <td class="px-4 py-3 text-xs">
-                        <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> Published </span>
+                        <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> <?php echo $row['status'];?> </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">12/06/2024</td>
+                      <td class="px-4 py-3 text-sm"><?php echo $row['date_creation'];?></td>
                     </tr>
+                    <?php endforeach;?>
                     </tbody>
                 </table>
               </div>
             </div>
 
-            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Stats Overview</h2>
+            <!-- <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Stats Overview</h2>
             <div class="grid gap-6 mb-8 md:grid-cols-2">
               <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
                 <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">Content Breakdown</h4>
@@ -272,7 +297,7 @@
                 <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">Views Traffic</h4>
                 <canvas id="line"></canvas>
               </div>
-            </div>
+            </div> -->
 
           </div>
         </main>
