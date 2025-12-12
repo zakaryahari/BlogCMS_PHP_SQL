@@ -18,13 +18,13 @@
           header("Location: ../login.php");
           exit();
       }
-
-      $sql_All_Categories = "select * from categorie";
-
-      $stmt = $db->query($sql_All_Categories);
-      $All_Categories = $stmt->fetchAll();
-      
       $categorie = new categorie($db);
+
+      $All_Categories = $categorie->getAllCategories();
+
+    //   $stmt = $db->query($sql_All_Categories);
+    //   $All_Categories = $stmt->fetchAll();
+      
       if (isset($_POST['submit_category'])) {
 
         $categorie->id_categorie = $_POST['id_categorie'];

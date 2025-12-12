@@ -25,6 +25,15 @@
             }
             return false;
         }
+        public function getAllCategories() {
+            $sql = "SELECT * FROM categorie";
+            $query = $this->connection->prepare($sql);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return false;
+        }
 
         public function Get_categorie(){
             $sql = "SELECT * FROM categorie where id_categorie = :id_categorie";
