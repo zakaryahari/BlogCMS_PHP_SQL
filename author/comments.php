@@ -1,3 +1,45 @@
+<?php 
+
+    require_once '../classes/database.php';
+    require_once '../classes/article.php';
+    require_once '../classes/categorie.php';
+    require_once '../classes/commentaire.php';
+    require_once '../classes/user.php';
+
+      $connection = new Database();
+      $db = $connection->getconnection();
+
+        session_start();
+        if (isset($_SESSION['username'])) {
+            if ($_SESSION['user_role'] == 'user') {
+                header("Location: ../index.html");
+                exit();
+            }
+        }
+        else {
+            header("Location: ../login.php");
+            exit();
+        }
+        $current_author = $_SESSION['username'];
+
+        $commentaire = new commentaire($db);
+        $article = new article($db);
+
+        if (!isset($_GET['action']) && !isset($_GET['id'])) {
+            $All_Comments = $commentaire->Get_Allcomments($current_author);        
+        }
+        else{
+            $article->id_article = $_GET['id'];
+            $All_Comments = $commentaire->Get_Articlecomments($current_author);        
+        }
+
+
+      
+        $article = new article($db);
+        $MyRecentArticles = $article->Get_Allarticle($current_author);
+
+        
+?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 <head>
@@ -74,7 +116,7 @@
                         </li>
                         <li class="relative">
                             <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none" @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account" aria-haspopup="true">
-                                <img class="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82" alt="" aria-hidden="true" />
+                                <img class="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82" alt="<?php echo $current_author; ?>" aria-hidden="true" />
                             </button>
                             <template x-if="isProfileMenuOpen">
                                 <ul x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click.away="closeProfileMenu" @keydown.escape="closeProfileMenu" class="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300 dark:bg-gray-700" aria-label="submenu">
@@ -113,39 +155,45 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                                    
+                                    <?php foreach($All_Comments as $row): ?>
                                     <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="px-4 py-3 text-sm font-semibold">
-                                            JohnDoe123
+                                            <?php echo $row['username']; ?>
                                         </td>
                                         
                                         <td class="px-4 py-3 text-sm max-w-xs truncate" title="Full comment here...">
-                                            This is a great article! I really enjoyed readin...
+                                            <?php echo $row['contenu_commentaire']; ?>
                                         </td>
 
                                         <td class="px-4 py-3 text-sm">
-                                            The Future of AI
+                                            <?php echo $row['nom_article']; ?>
                                         </td>
 
                                         <td class="px-4 py-3 text-xs">
-                                            <span class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full dark:bg-orange-700 dark:text-orange-100">
-                                                pending
+                                            <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                                <?php echo $row['status']; ?>
                                             </span>
                                         </td>
 
                                         <td class="px-4 py-3 text-sm">
-                                            2024-12-10
+                                            <?php echo $row['date_commentaire']; ?>
                                         </td>
 
                                         <td class="px-4 py-3">
                                             <div class="flex items-center space-x-4 text-sm">
                                                 
-                                                <a href="comments.php?action=approve&id_comment=1" 
-                                                   class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-green-400 focus:outline-none focus:shadow-outline-gray" 
-                                                   aria-label="Approve"
-                                                   title="Approve Comment">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                                </a>
+                                                <button 
+                                                    onclick="openStatusModal(this)" 
+                                                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" 
+                                                    aria-label="Edit Status"
+                                                    title="Change Status"
+                                                    data-id="<?php echo $row['id_commentaire']; ?>"
+                                                    data-status="<?php echo $row['status']; ?>"
+                                                >
+                                                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
 
                                                 <a href="comments.php?action=delete&id_comment=1" 
                                                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" 
@@ -157,14 +205,15 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                                     </tbody>
                             </table>
-                        </div>
-                    </div>
+                            
 
                 </div>
             </main>
         </div>
     </div>
+    <script src="../assets/js/author_script.js"></script>
 </body>
 </html>
