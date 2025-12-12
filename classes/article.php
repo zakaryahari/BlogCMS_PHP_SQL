@@ -86,6 +86,15 @@
             return false;
         }
 
-        
+        public function Delete_article() {
+            $sql = "DELETE FROM article WHERE id_article = :id_article";
+            $query = $this->connection->prepare($sql);
+            $query->bindParam(":id_article", $this->id_article);
+
+            if ($query->execute()) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
