@@ -68,5 +68,24 @@
             }
             return false;
         }
+
+        public function Update_article() {
+            $sql = "UPDATE article SET nom_article = :nom_article, contenu = :contenu, id_categorie = :id_categorie, image_url = :image_url, date_modification = NOW() WHERE id_article = :id_article";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":nom_article", $this->nom_article);
+            $query->bindParam(":contenu", $this->contenu);
+            $query->bindParam(":id_categorie", $this->id_categorie);
+            $query->bindParam(":image_url", $this->image_url);
+            $query->bindParam(":id_article", $this->id_article);
+
+            if ($query->execute()) {
+                return true;
+            }
+            return false;
+        }
+
+        
     }
 ?>
