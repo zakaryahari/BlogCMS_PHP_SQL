@@ -41,13 +41,15 @@
             return false;
         }
 
-        public function Get_article(){
-            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie";
+        public function Get_Resent_article($username){
+            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie WHERE a.username = :username ORDER BY a.date_creation DESC LIMIT 5";
 
             $query = $this->connection->prepare($sql);
 
+            $query->bindParam(":username", $username);
+
             if($query->execute()) {
-                $result = $query->fetch(PDO::FETCH_ASSOC);
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
                 return $result;
             }
             return false;
