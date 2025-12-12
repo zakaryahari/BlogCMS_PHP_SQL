@@ -1,3 +1,43 @@
+<?php 
+
+    require_once '../classes/database.php';
+    require_once '../classes/user.php';
+
+    $connection = new Database();
+    $db = $connection->getconnection();
+
+    session_start();
+    if (isset($_SESSION['username'])) {
+    if ($_SESSION['user_role'] == 'author') {
+        header("Location: ../index.html");
+        exit();
+    }
+    }
+    else {
+        header("Location: ../pages/login.php");
+        exit();
+    }
+
+    $user = new user($db);
+
+    $All_Users = $user->getAllUsers();
+
+    if (isset($_POST['submit_update_role'])) {
+
+        $user->username = $_POST['user_id'];
+        $user->role = $_POST['role'];
+
+        if ($user->Update_user() != false) {
+            echo "user updated seccessfuly !!";
+            header("Location: users.php"); 
+            exit();
+        }
+        else {
+            echo "there was a error updating this user";
+        }
+    
+    }  
+?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 <head>
@@ -149,7 +189,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr class="text-gray-700 dark:text-gray-400">
+                                    <!-- <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="px-4 py-3">
                                             <div class="flex items-center text-sm">
                                                 <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
@@ -184,31 +224,32 @@
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </tr> -->
+                                    <?php foreach($All_Users as $row): ?>
                                     <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="px-4 py-3">
                                             <div class="flex items-center text-sm">
                                                 <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&facepad=3&fit=facearea&s=707b9c33066bf8808c934c8ab394dff6" alt="" loading="lazy" />
+                                                    <img class="object-cover w-full h-full rounded-full" src="https://www.svgrepo.com/show/384670/account-avatar-profile-user.svg" alt="" loading="lazy" />
                                                     <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                                                 </div>
                                                 <div>
-                                                    <p class="font-semibold">Jolina Angelie</p>
-                                                    <p class="text-xs text-gray-600 dark:text-gray-400">Writer</p>
+                                                    <p class="font-semibold"><?php echo $row['username']; ?></p>
+                                                    <!-- <p class="text-xs text-gray-600 dark:text-gray-400">Writer</p> -->
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-xs">
                                             <span class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full dark:text-white dark:bg-orange-600">
-                                                Author
+                                                <?php echo $row['role']; ?>
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
-                                            12/06/2024
+                                            <?php echo $row['date_inscription']; ?>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center space-x-4 text-sm">
-                                                <button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
+                                                <button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit" data-id="<?php echo $row['username']; ?>" data-username="<?php echo $row['username']; ?>" data-email="<?php echo $row['email']; ?>" data-role="<?php echo $row['role']; ?>" onclick="openEditUserModal(this)">
                                                     <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                                     </svg>
@@ -221,13 +262,81 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            <div id="userModal" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center hidden">
+                                    <div class="w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-xl" role="dialog" id="modal">
+                                        
+                                        <header class="flex justify-end">
+                                            <button class="inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover: hover:text-gray-700" aria-label="close" onclick="closeUserModal()">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" role="img" aria-hidden="true">
+                                                    <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        </header>
+
+                                        <div class="mt-4 mb-6">
+                                            <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                                                Edit User Role
+                                            </p>
+                                            
+                                            <form action="users.php" method="POST">
+                                                <input type="hidden" name="user_id" id="modal_user_id">
+
+                                                <label class="block text-sm">
+                                                    <span class="text-gray-700 dark:text-gray-400">Username</span>
+                                                    <input 
+                                                        type="text" 
+                                                        id="modal_user_username"
+                                                        name="username_id"
+                                                        class="block w-full mt-1 text-sm bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 focus:outline-none form-input cursor-not-allowed" 
+                                                        disabled
+                                                    />
+                                                </label>
+
+                                                <label class="block mt-4 text-sm">
+                                                    <span class="text-gray-700 dark:text-gray-400">Email</span>
+                                                    <input 
+                                                        type="email" 
+                                                        id="modal_user_email"
+                                                        name="email"
+                                                        class="block w-full mt-1 text-sm bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 focus:outline-none form-input cursor-not-allowed" 
+                                                        disabled
+                                                    />
+                                                </label>
+
+                                                <label class="block mt-4 text-sm">
+                                                    <span class="text-gray-700 dark:text-gray-400">Role</span>
+                                                    <select 
+                                                        name="role" 
+                                                        id="modal_user_role"
+                                                        class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                                                    >
+                                                        <option value="user">User</option>
+                                                        <option value="author">Author</option>
+                                                        <option value="admin">Admin</option>
+                                                    </select>
+                                                </label>
+
+                                                <footer class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">
+                                                    <button type="button" onclick="closeUserModal()" class="w-full px-5 py-3 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 sm:px-4 sm:py-2 sm:w-auto active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray">
+                                                        Cancel
+                                                    </button>
+                                                    <button type="submit" name="submit_update_role" class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:w-auto sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                                        Save Role
+                                                    </button>
+                                                </footer>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
             </main>
         </div>
     </div>
+    <script src="../assets/js/admin_script.js"></script>
 </body>
 </html>
