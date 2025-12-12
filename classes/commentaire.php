@@ -69,5 +69,18 @@
             }
             return false;
         }
+
+        public function Update_comment_status($id, $status) {
+            $sql = "UPDATE commentaire SET status = :status WHERE id_commentaire = :id";
+            $query = $this->connection->prepare($sql);
+            
+            $query->bindParam(":status", $status);
+            $query->bindParam(":id", $id);
+            
+            if ($query->execute()) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
