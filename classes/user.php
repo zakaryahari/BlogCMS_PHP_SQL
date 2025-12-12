@@ -57,6 +57,19 @@
             return false;
         }
 
+        public function Delete_user(){
+            $sql = "DELETE FROM utilisateur where username = :username";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":username",$this->username);
+
+            if($query->execute()) {
+                return true;
+            }
+            return false;
+        }
+
         public function login($username , $password){
             $sql = "SELECT * FROM utilisateur WHERE username = :username";
 
