@@ -32,6 +32,31 @@
             return false;
         }
 
+        public function getAllUsers() {
+            $sql = "SELECT * FROM utilisateur";
+            $query = $this->connection->prepare($sql);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return false;
+        }
+        
+        public function Update_user(){
+            $sql = "UPDATE utilisateur SET role = :role WHERE username = :username";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":username",$this->username);
+            $query->bindParam(":role",$this->role);
+
+
+            if($query->execute()) {
+                return true;
+            }
+            return false;
+        }
+
         public function login($username , $password){
             $sql = "SELECT * FROM utilisateur WHERE username = :username";
 
