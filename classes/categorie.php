@@ -55,5 +55,18 @@
             }
             return false;
         }
+
+        public function Delete_categorie(){
+            $sql = "DELETE FROM categorie where id_categorie = :id_categorie";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":id_categorie",$this->id_categorie);
+
+            if($query->execute()) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
