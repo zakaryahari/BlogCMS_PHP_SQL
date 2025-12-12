@@ -38,6 +38,18 @@
         $article = new article($db);
         $MyRecentArticles = $article->Get_Allarticle($current_author);
 
+    if (isset($_POST['submit_status'])) {
+        $id_com = $_POST['id_commentaire'];
+        $status = $_POST['status'];
+
+        if ($commentaire->Update_comment_status($id_com, $status)) {
+            // Redirect back to the page
+            header("Location: comments.php?");
+            exit();
+        } else {
+            echo "Error updating comment status.";
+        }
+    }
         
 ?>
 <!DOCTYPE html>
@@ -208,7 +220,7 @@
                                     <?php endforeach; ?>
                                     </tbody>
                             </table>
-                            <div id="statusModal" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center ">
+                            <div id="statusModal" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center hidden">
                                 <div class="w-[50%] px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-sm" role="dialog" id="modal">
                                     
                                     <header class="flex justify-end">
