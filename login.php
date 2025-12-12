@@ -28,7 +28,12 @@
         header('Location: /BRIEF-8/admin/dashboard.php');
         exit();
       }
-      else {
+      elseif ($check['role'] == 'author') {
+        echo "hello author";
+        header('Location: /BRIEF-8/author/dashboard.php');
+        exit();
+      } 
+      else{
         echo "hello user";
         header('Location: index.html');
         exit();
