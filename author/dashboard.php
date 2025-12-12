@@ -1,3 +1,31 @@
+<?php 
+    require_once '../classes/database.php';
+    require_once '../classes/user.php';
+
+    $connection = new Database();
+    $db = $connection->getconnection();
+
+    session_start();
+    if (isset($_SESSION['username'])) {
+        if ($_SESSION['user_role'] == 'user') {
+            header("Location: ../index.html");
+            exit();
+        }
+    }
+    else {
+        header("Location: ../login.php");
+        exit();
+    }
+
+    $current_author = $_SESSION['username'];
+
+    $sql_MyRecent = "SELECT * FROM article WHERE username = :username ORDER BY date_creation DESC LIMIT 5";
+    $stmt = $db->prepare($sql_MyRecent);
+    $stmt->bindParam(':username', $current_author);
+    $stmt->execute();
+    $MyRecentArticles = $stmt->fetchAll();
+
+?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
   <head>
