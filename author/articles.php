@@ -48,9 +48,18 @@
                     echo "Error creating article.";
                 }
             }
-
+            else {
+                if ($article->Update_article()) {
+                    header("Location: articles.php?"); 
+                    exit();
+                } else {
+                    echo "Error updating article.";
+                }
+            }
             
         }
+
+        
 
 ?>
 <!DOCTYPE html>
@@ -207,7 +216,7 @@
                         </div>
                     </div>
 
-                    <div id="articleModal" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center">
+                    <div id="articleModal" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center hidden">
                         <div class="w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-xl" role="dialog" id="modal">
                             
                             <header class="flex justify-end">
