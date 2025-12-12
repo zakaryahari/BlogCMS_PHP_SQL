@@ -1,3 +1,36 @@
+<?php 
+
+    require_once '../classes/database.php';
+    require_once '../classes/article.php';
+    require_once '../classes/categorie.php';
+    require_once '../classes/commentaire.php';
+
+      $connection = new Database();
+      $db = $connection->getconnection();
+
+        session_start();
+        if (isset($_SESSION['username'])) {
+            if ($_SESSION['user_role'] == 'user') {
+                header("Location: ../index.html");
+                exit();
+            }
+        }
+        else {
+            header("Location: ../login.php");
+            exit();
+        }
+
+        $categorie = new categorie($db);
+        $All_Categories = $categorie->getAllCategories();
+
+        $current_author = $_SESSION['username'];
+      
+        $article = new article($db);
+        $MyRecentArticles = $article->Get_Allarticle($current_author);
+
+
+
+?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 <head>
@@ -111,29 +144,30 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                                    <?php foreach ($MyRecentArticles as $row):?>
                                     <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="px-4 py-3">
                                             <div class="flex items-center text-sm">
                                                 <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full" src="../assets/img/default.png" alt="" loading="lazy" />
+                                                    <img class="object-cover w-full h-full rounded-full" src="<?php echo $row['image_url']; ?>" alt="" loading="lazy" />
                                                     <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                                                 </div>
                                                 <div>
-                                                    <p class="font-semibold">Dummy Title</p>
-                                                    <p class="text-xs text-gray-600 dark:text-gray-400">100 views</p>
+                                                    <p class="font-semibold"><?php echo $row['nom_article']; ?></p>
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo $row['view_count']; ?></p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-3 text-sm">Tech</td>
+                                        <td class="px-4 py-3 text-sm"><?php echo $row['category_name']; ?></td>
                                         <td class="px-4 py-3 text-xs">
                                             <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                                                Published
+                                                <?php echo $row['status']; ?>
                                             </span>
                                         </td>
-                                        <td class="px-4 py-3 text-sm">12/05/2024</td>
+                                        <td class="px-4 py-3 text-sm"><?php echo $row['date_creation']; ?></td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center space-x-4 text-sm">
-                                                <button onclick="openEditModal(this)" data-id="1" data-title="Dummy Title" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
+                                                <button onclick="openEditModal(this)" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit" data-id="<?php echo $row['id_article']; ?>" data-title="<?php echo $row['nom_article']; ?>" data-content="<?php echo $row['contenu']; ?>" data-image="<?php echo $row['image_url']; ?>" data-category="<?php echo $row['id_categorie']; ?>">
                                                     <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
                                                 </button>
                                                 <a href="#" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Delete">
@@ -145,6 +179,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -174,9 +209,11 @@
 
                                     <label class="block mt-4 text-sm">
                                         <span class="text-gray-700 dark:text-gray-400">Category</span>
+
                                         <select name="id_categorie" id="modal_id_categorie" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-                                            <option value="1">Technology</option>
-                                            <option value="2">Health</option>
+                                            <?php foreach($All_Categories as $categorie): ?>
+                                            <option value="<?php echo $categorie['id_categorie']; ?>"><?php echo $categorie['libelle']; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </label>
 
