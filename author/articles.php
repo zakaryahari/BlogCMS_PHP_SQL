@@ -28,7 +28,29 @@
         $article = new article($db);
         $MyRecentArticles = $article->Get_Allarticle($current_author);
 
+        if (isset($_POST['submit_article'])) {
+            $article->id_article = $_POST['id_article'];
+            $article->nom_article = $_POST['nom_article'];
+            $article->contenu = $_POST['contenu'];
+            $article->id_categorie = $_POST['id_categorie'];
+            $article->image_url = $_POST['image_url'];
 
+            $article->username = $current_author; 
+            $article->status = 'published';
+            $article->date_creation = date('Y-m-d');
+            $article->date_modification = date('Y-m-d');
+
+            if (empty($article->id_article)) {
+                if ($article->Add_new_article()) {
+                    header("Location: articles.php?"); 
+                    exit();
+                } else {
+                    echo "Error creating article.";
+                }
+            }
+
+            
+        }
 
 ?>
 <!DOCTYPE html>
