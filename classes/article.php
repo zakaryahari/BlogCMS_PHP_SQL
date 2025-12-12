@@ -54,5 +54,19 @@
             }
             return false;
         }
+
+        public function Get_Allarticle($username){
+            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie WHERE a.username = :username";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":username", $username);
+
+            if($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            }
+            return false;
+        }
     }
 ?>
