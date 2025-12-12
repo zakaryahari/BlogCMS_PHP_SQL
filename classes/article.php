@@ -40,5 +40,17 @@
             }
             return false;
         }
+
+        public function Get_article(){
+            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie";
+
+            $query = $this->connection->prepare($sql);
+
+            if($query->execute()) {
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+                return $result;
+            }
+            return false;
+        }
     }
 ?>
