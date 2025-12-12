@@ -9,8 +9,17 @@ function openModal() {
 }
 
 function openEditModal(button) {
-  document.getElementById('modal_id_article').value = button.dataset.id;
-  document.getElementById('modal_nom_article').value = button.dataset.title;
+  const modal_id_article = document.getElementById('modal_id_article');
+  const modal_nom_article = document.getElementById('modal_nom_article');
+  const modal_id_categorie = document.getElementById('modal_id_categorie');
+  const modal_image_url = document.getElementById('modal_image_url');
+  const modal_contenu = document.getElementById('modal_contenu');
+
+  modal_id_article.value = button.getAttribute('data-id');
+  modal_nom_article.value = button.getAttribute('data-title');
+  modal_id_categorie.value = button.getAttribute('data-category');
+  modal_image_url.value = button.getAttribute('data-image');
+  modal_contenu.value = button.getAttribute('data-content');
 
   articleModal.classList.remove('hidden');
 }
