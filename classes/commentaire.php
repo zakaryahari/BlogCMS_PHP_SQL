@@ -41,5 +41,33 @@
             }
             return false;
         }
+
+        public function Get_Allcomments($username){
+            $sql = "SELECT co.* , ar.nom_article AS nom_article FROM commentaire co JOIN article ar ON co.id_article = ar.id_article WHERE co.username = :username";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":username", $username);
+
+            if($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            }
+            return false;
+        }
+
+        public function Get_Articlecomments($id_article){
+            $sql = "SELECT co.* , ar.nom_article AS nom_article FROM commentaire co JOIN article ar ON co.id_article = ar.id_article WHERE co.id_article = :id_article";
+
+            $query = $this->connection->prepare($sql);
+
+            $query->bindParam(":id_article", $id_article);
+
+            if($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            }
+            return false;
+        }
     }
 ?>
