@@ -35,3 +35,29 @@ if (articleModal) {
     }
   });
 }
+
+const statusModal = document.getElementById('statusModal');
+
+function openStatusModal(button) {
+  const commentId = button.getAttribute('data-id');
+  const currentStatus = button.getAttribute('data-status');
+
+  document.getElementById('modal_id_commentaire').value = commentId;
+
+  const select = document.getElementById('modal_status');
+  select.value = currentStatus;
+
+  statusModal.classList.remove('hidden');
+}
+
+function closeStatusModal() {
+  statusModal.classList.add('hidden');
+}
+
+if (statusModal) {
+  statusModal.addEventListener('click', (e) => {
+    if (e.target.id == 'statusModal') {
+      statusModal.classList.add('hidden');
+    }
+  });
+}
