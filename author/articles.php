@@ -207,5 +207,6 @@
             </main>
         </div>
     </div>
+    <script src="../assets/js/author_script.js"></script>
 </body>
 </html>
