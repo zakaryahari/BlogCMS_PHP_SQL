@@ -9,12 +9,15 @@
     $db = $connection->getconnection();
     
     $article = new article($db);
+    $comments = new commentaire($db);
     
     session_start();
     
     if (isset($_GET['id'])) {
         $selected_id = $_GET['id'];
         $articles = $article->getArticleById($selected_id);
+
+        $comments = $comments->getApprovedComments($selected_id);
     }
 ?>
 <!DOCTYPE html>
@@ -91,35 +94,22 @@
             <h3 class="mb-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Comments</h3>
 
             <div class="space-y-6">
-                
+                <?php foreach($comments as $row): ?>
                 <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
                     <div class="flex items-center justify-between mb-2">
                         <h5 class="font-semibold text-gray-800 dark:text-gray-200">
-                            Alice Wonder
+                            <?php echo $row['username']; ?>   
                         </h5>
                         <span class="text-xs text-gray-500 dark:text-gray-400">
-                            Dec 12, 2024
+                            <?php echo $row['date_commentaire']; ?>   
                         </span>
                     </div>
                     <p class="text-gray-600 dark:text-gray-300">
-                        This is a fantastic article! I really learned a lot about the topic. Thanks for sharing.
+                            <?php echo $row['contenu_commentaire']; ?>   
                     </p>
                 </div>
                 <br>
-                <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-semibold text-gray-800 dark:text-gray-200">
-                            Bob The Builder
-                        </h5>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                            Dec 11, 2024
-                        </span>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-300">
-                        I have a question about the second paragraph. Can you elaborate on the specific tools mentioned?
-                    </p>
-                </div>
-                <br>
+                <?php endforeach; ?>
 
             </div>
             <br>
