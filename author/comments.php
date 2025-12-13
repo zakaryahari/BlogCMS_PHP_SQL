@@ -30,7 +30,7 @@
         }
         if (isset($_GET['action']) && isset($_GET['id'])) {
             $article->id_article = $_GET['id'];
-            $All_Comments = $commentaire->Get_Articlecomments($current_author);        
+            $All_Comments = $commentaire->Get_Articlecomments($_GET['id']);        
         }
 
 
