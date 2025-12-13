@@ -40,32 +40,30 @@
             return false;
         }
 
-        public function Get_Allcomments($username){
-            $sql = "SELECT co.* , ar.nom_article AS nom_article FROM commentaire co JOIN article ar ON co.id_article = ar.id_article WHERE co.username = :username";
-
+        public function Get_Allcomments($author_username) {
+            
+            $sql = "SELECT c.*, a.nom_article, u.username as comment_author FROM commentaire c JOIN article a ON c.id_article = a.id_article JOIN utilisateur u ON c.username = u.username WHERE a.username = :author_username ORDER BY c.date_commentaire DESC";
+            
             $query = $this->connection->prepare($sql);
-
-            $query->bindParam(":username", $username);
-
-            if($query->execute()) {
-                $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                return $result;
+            $query->bindParam(":author_username", $author_username);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
             }
-            return false;
+            return [];
         }
 
-        public function Get_Articlecomments($id_article){
-            $sql = "SELECT co.* , ar.nom_article AS nom_article FROM commentaire co JOIN article ar ON co.id_article = ar.id_article WHERE co.id_article = :id_article";
+        public function Get_Articlecomments($id_article) {
+
+            $sql = "SELECT c.*, a.nom_article FROM commentaire c JOIN article a ON c.id_article = a.id_article WHERE c.id_article = :id_article ORDER BY c.date_commentaire DESC";
 
             $query = $this->connection->prepare($sql);
-
             $query->bindParam(":id_article", $id_article);
 
-            if($query->execute()) {
-                $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                return $result;
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
             }
-            return false;
+            return [];
         }
 
         public function Update_comment_status($id, $status) {
