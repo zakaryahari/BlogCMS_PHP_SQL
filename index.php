@@ -1,3 +1,16 @@
+<?php 
+    require_once 'classes/database.php';
+    require_once 'classes/article.php';
+
+    $connection = new Database();
+    $db = $connection->getconnection();
+    
+    $article = new article($db);
+    $articles = $article->getPublishedArticles();
+
+    session_start();
+?>
+
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 <head>
@@ -27,14 +40,41 @@
                     </button>
                 </li>
 
-                <li class="relative">
-                    <a href="pages/login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
-                </li>
-                <li class="relative">
-                    <a href="pages/signup.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                        Create Account
-                    </a>
-                </li>
+                <?php if(isset($_SESSION['username'])): ?>
+                    <?php if($_SESSION['user_role'] == 'admin'): ?>
+                        <li class="relative">
+                            <a href="admin/dashboard.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                Admin Panel
+                            </a>
+                        </li>
+                    <?php elseif($_SESSION['user_role'] == 'author'): ?>
+                        <li class="relative">
+                            <a href="author/dashboard.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                Author Dashboard
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="relative">
+                        <a href="assets/php/logout.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Logout</a>
+                    </li>
+                    
+                    <li class="relative">
+                         <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none" aria-label="Account" aria-haspopup="true">
+                            <img class="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82" alt="" aria-hidden="true" />
+                        </button>
+                    </li>
+
+                <?php else: ?>
+                    <li class="relative">
+                        <a href="pages/login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
+                    </li>
+                    <li class="relative">
+                        <a href="pages/signup.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                            Create Account
+                        </a>
+                    </li>
+                <?php endif; ?>
 
             </ul>
         </div>
@@ -56,104 +96,46 @@
 
         <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
             
+            <?php foreach($articles as $row): ?>
             <div class="flex flex-col bg-white rounded-lg shadow-xs dark:bg-gray-800">
                 <div class="relative w-full h-48">
-                    <img class="object-cover w-full h-full rounded-t-lg" src="assets/img/default.png" alt="Article Image" loading="lazy" />
+                    <img class="object-cover w-full h-full rounded-t-lg" src="<?php echo !empty($row['image_url']) ? $row['image_url'] : 'assets/img/default.png'; ?>" alt="Article Image" loading="lazy" />
                 </div>
+                
                 <div class="p-4 flex-grow">
                     <div class="flex items-center justify-between mb-2">
                         <span class="px-2 py-1 text-xs font-bold text-purple-600 uppercase bg-purple-100 rounded-full dark:text-purple-100 dark:bg-purple-600">
-                            Technology
+                            <?php echo $row['category_name'] ? $row['category_name'] : 'General'; ?>
                         </span>
                         <span class="text-xs text-gray-600 dark:text-gray-400">
-                            Oct 24, 2024
+                            <?php echo date('M d, Y', strtotime($row['date_creation'])); ?>
                         </span>
                     </div>
-                    <h4 class="mb-2 text-xl font-semibold text-gray-800 dark:text-gray-300 hover:text-purple-600">
-                        <a href="#">The Future of AI</a>
-                    </h4>
-                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore...
-                    </p>
-                </div>
-                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                            <span>JohnDoe</span>
-                        </div>
-                        <a href="#" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
-                            Read more &rarr;
-                        </a>
-                    </div>
-                </div>
-            </div>
 
-            <div class="flex flex-col bg-white rounded-lg shadow-xs dark:bg-gray-800">
-                <div class="relative w-full h-48">
-                    <img class="object-cover w-full h-full rounded-t-lg" src="assets/img/default.png" alt="Article Image" loading="lazy" />
-                </div>
-                <div class="p-4 flex-grow">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="px-2 py-1 text-xs font-bold text-purple-600 uppercase bg-purple-100 rounded-full dark:text-purple-100 dark:bg-purple-600">
-                            Health
-                        </span>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">
-                            Oct 22, 2024
-                        </span>
-                    </div>
                     <h4 class="mb-2 text-xl font-semibold text-gray-800 dark:text-gray-300 hover:text-purple-600">
-                        <a href="#">10 Tips for Healthy Living</a>
+                        <a href="article_details.php?id=<?php echo $row['id_article']; ?>">
+                            <?php echo $row['nom_article']; ?>
+                        </a>
                     </h4>
+                    
                     <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo...
+                        <?php echo substr($row['contenu'], 0, 100) . '...'; ?>
                     </p>
                 </div>
-                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                            <span>JaneSmith</span>
-                        </div>
-                        <a href="#" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
-                            Read more &rarr;
-                        </a>
-                    </div>
-                </div>
-            </div>
 
-            <div class="flex flex-col bg-white rounded-lg shadow-xs dark:bg-gray-800">
-                <div class="relative w-full h-48">
-                    <img class="object-cover w-full h-full rounded-t-lg" src="assets/img/default.png" alt="Article Image" loading="lazy" />
-                </div>
-                <div class="p-4 flex-grow">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="px-2 py-1 text-xs font-bold text-purple-600 uppercase bg-purple-100 rounded-full dark:text-purple-100 dark:bg-purple-600">
-                            Science
-                        </span>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">
-                            Oct 20, 2024
-                        </span>
-                    </div>
-                    <h4 class="mb-2 text-xl font-semibold text-gray-800 dark:text-gray-300 hover:text-purple-600">
-                        <a href="#">Space Exploration Updates</a>
-                    </h4>
-                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur...
-                    </p>
-                </div>
                 <div class="p-4 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                            <span>AstroBoy</span>
+                            <span><?php echo $row['username']; ?></span>
                         </div>
-                        <a href="#" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
+                        <a href="article_details.php?id=<?php echo $row['id_article']; ?>" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
                             Read more &rarr;
                         </a>
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
 
         </div>
     </div>
