@@ -181,7 +181,13 @@
                                     <?php foreach($All_Comments as $row): ?>
                                     <tr class="text-gray-700 dark:text-gray-400">
                                         <td class="px-4 py-3 text-sm font-semibold">
-                                            <?php echo $row['username']; ?>
+                                            <?php
+                                                if ($row['username'] == null) {
+                                                    echo "Invité";
+                                                }else {
+                                                    echo $row['username']; 
+                                                }
+                                             ?>
                                         </td>
                                         
                                         <td class="px-4 py-3 text-sm max-w-xs truncate" title="Full comment here...">
