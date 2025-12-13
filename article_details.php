@@ -12,13 +12,31 @@
     $comments = new commentaire($db);
     
     session_start();
-    
+    $selected_id;
+
     if (isset($_GET['id'])) {
         $selected_id = $_GET['id'];
         $articles = $article->getArticleById($selected_id);
 
         $comments = $comments->getApprovedComments($selected_id);
     }
+    if (isset($_POST['submit_comment'])) {
+        $comments->email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : $_POST['guest_Email'];
+
+        $comments->contenu_commentaire = $_POST['contenu_commentaire'];
+        // $comments->username = $current_author;
+        $comments->id_article = $_GET['selected_id'];
+
+
+        if ($comments->Add_new_commentaire()) {
+            header("Location: article_details.php?id=".$_GET['selected_id']); 
+            exit();
+        } else {
+            echo "Error creating commentaire.";
+        }
+        
+    }
+
 ?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
@@ -118,17 +136,22 @@
                     Leave a comment
                 </h4>
                 
-                <form action="article_details.php" method="POST">
+                <form action="article_details.php?selected_id=<?php echo $selected_id; ?>" method="POST">
                     
+                    <?php if (!isset($_SESSION['username'])) :?>
+
                     <div class="mb-4">
-                        <label class="block text-sm text-gray-700 dark:text-gray-400 mb-1">Your Name</label>
-                        <input type="text" name="guest_name" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline-purple dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600" placeholder="John Doe" required>
+                        <label class="block text-sm text-gray-700 dark:text-gray-400 mb-1">Your Email</label>
+                        <input type="Email" name="guest_Email" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline-purple dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600" placeholder="JohnDoe@gmail.com">
                     </div>
+
+                    <?php endif; ?>
 
                     <div class="mb-4">
                         <label class="block text-sm text-gray-700 dark:text-gray-400 mb-1">Message</label>
                         <textarea name="contenu_commentaire" rows="3" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline-purple dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600" placeholder="Write your thoughts here..." required></textarea>
                     </div>
+
 
                     <button type="submit" name="submit_comment" class="mt-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                         Post Comment
