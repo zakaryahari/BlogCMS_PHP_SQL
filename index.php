@@ -56,7 +56,7 @@
                     <?php endif; ?>
 
                     <li class="relative">
-                        <a href="assets/php/logout.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Logout</a>
+                        <a href="logout.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Logout</a>
                     </li>
                     
                     <li class="relative">
@@ -67,10 +67,10 @@
 
                 <?php else: ?>
                     <li class="relative">
-                        <a href="pages/login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
+                        <a href="login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
                     </li>
                     <li class="relative">
-                        <a href="pages/signup.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                        <a href="create-account.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                             Create Account
                         </a>
                     </li>
