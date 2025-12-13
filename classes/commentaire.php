@@ -82,5 +82,16 @@
             }
             return false;
         }
+
+        public function Delete_comment($id) {
+            $sql = "DELETE FROM commentaire WHERE id_commentaire = :id";
+            $query = $this->connection->prepare($sql);
+            $query->bindParam(":id", $id);
+            
+            if ($query->execute()) {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
