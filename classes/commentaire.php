@@ -93,5 +93,17 @@
             }
             return false;
         }
+
+        public function getApprovedComments($id_article) {
+            $sql = "SELECT * FROM commentaire WHERE id_article = :id_article AND status = 'approved' ORDER BY date_commentaire DESC";
+            
+            $query = $this->connection->prepare($sql);
+            $query->bindParam(":id_article", $id_article);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return [];
+        }
     }
 ?>
