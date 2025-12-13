@@ -107,5 +107,17 @@
             }
             return [];
         }
+
+        public function getArticleById($id) {
+        $sql = "SELECT a.*, c.libelle AS category_name, u.username FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie JOIN utilisateur u ON a.username = u.username WHERE a.id_article = :id";
+        
+        $query = $this->connection->prepare($sql);
+        $query->bindParam(":id", $id);
+        
+        if ($query->execute()) {
+            return $query->fetch(PDO::FETCH_ASSOC);
+        }
+        return false;
+    }
     }
 ?>
