@@ -96,5 +96,16 @@
             }
             return false;
         }
+
+        public function getPublishedArticles() {
+            $sql = "SELECT a.*, c.libelle AS category_name, u.username FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie JOIN utilisateur u ON a.username = u.username WHERE a.status = 'published' ORDER BY a.date_creation DESC";
+            
+            $query = $this->connection->prepare($sql);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return [];
+        }
     }
 ?>
