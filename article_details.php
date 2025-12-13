@@ -1,3 +1,22 @@
+<?php 
+    require_once 'classes/database.php';
+    require_once 'classes/article.php';
+    require_once 'classes/categorie.php';
+    require_once 'classes/commentaire.php';
+    require_once 'classes/user.php';
+
+    $connection = new Database();
+    $db = $connection->getconnection();
+    
+    $article = new article($db);
+    
+    session_start();
+    
+    if (isset($_GET['id'])) {
+        $selected_id = $_GET['id'];
+        $articles = $article->getArticleById($selected_id);
+    }
+?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 <head>
@@ -41,39 +60,69 @@
     </nav>
 
     <div class="container px-6 py-8 mx-auto">
-        
+        <br><br>
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800 overflow-hidden">
             
-            <img class="object-cover w-full h-64 md:h-96" src="assets/img/default.png" alt="Article Image">
+            <img class="object-cover w-full h-64 md:h-96" src="<?php echo $articles['image_url']; ?>" alt="Article Image">
             
             <div class="p-6 md:p-10">
                 <div class="flex items-center justify-between mb-4">
                     <span class="px-3 py-1 text-sm font-bold text-purple-600 uppercase bg-purple-100 rounded-full dark:text-purple-100 dark:bg-purple-600">
-                        Technology
+                        <?php echo $articles['category_name']; ?>
                     </span>
                     <span class="text-sm text-gray-600 dark:text-gray-400">
-                        December 10, 2024 • by AuthorName
+                        <?php echo $articles['date_creation'] . " • by " . $articles['username']; ?>
                     </span>
                 </div>
 
                 <h1 class="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    The Future of Artificial Intelligence
+                    <?php echo $articles['nom_article']; ?>
                 </h1>
 
                 <div class="prose max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
                     <p class="mb-4">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </p>
-                    <p class="mb-4">
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        <?php echo $articles['contenu']; ?>
                     </p>
                 </div>
             </div>
         </div>
-
+        <br>
         <div class="max-w-4xl mx-auto mt-10">
             <h3 class="mb-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Comments</h3>
 
+            <div class="space-y-6">
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
+                    <div class="flex items-center justify-between mb-2">
+                        <h5 class="font-semibold text-gray-800 dark:text-gray-200">
+                            Alice Wonder
+                        </h5>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            Dec 12, 2024
+                        </span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        This is a fantastic article! I really learned a lot about the topic. Thanks for sharing.
+                    </p>
+                </div>
+                <br>
+                <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
+                    <div class="flex items-center justify-between mb-2">
+                        <h5 class="font-semibold text-gray-800 dark:text-gray-200">
+                            Bob The Builder
+                        </h5>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            Dec 11, 2024
+                        </span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        I have a question about the second paragraph. Can you elaborate on the specific tools mentioned?
+                    </p>
+                </div>
+                <br>
+
+            </div>
+            <br>
             <div class="bg-white p-6 rounded-lg shadow-md dark:bg-gray-800 mb-8">
                 <h4 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
                     Leave a comment
@@ -97,40 +146,8 @@
                 </form>
             </div>
 
-            <div class="space-y-6">
-                
-                <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-semibold text-gray-800 dark:text-gray-200">
-                            Alice Wonder
-                        </h5>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                            Dec 12, 2024
-                        </span>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-300">
-                        This is a fantastic article! I really learned a lot about the topic. Thanks for sharing.
-                    </p>
-                </div>
-
-                <div class="bg-white p-6 rounded-lg shadow-sm dark:bg-gray-800 border-l-4 border-purple-600">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-semibold text-gray-800 dark:text-gray-200">
-                            Bob The Builder
-                        </h5>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                            Dec 11, 2024
-                        </span>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-300">
-                        I have a question about the second paragraph. Can you elaborate on the specific tools mentioned?
-                    </p>
-                </div>
-
-            </div>
-
         </div>
-
+        <br><br>
     </div>
 
     <footer class="py-10 mt-10 bg-white dark:bg-gray-800 border-t dark:border-gray-700">
