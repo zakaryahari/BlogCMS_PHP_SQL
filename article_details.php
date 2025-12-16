@@ -14,6 +14,7 @@
     session_start();
     $selected_id;
 
+    // $current_author = $_SESSION['username'];
     if (isset($_GET['id'])) {
         $selected_id = $_GET['id'];
         $articles = $article->getArticleById($selected_id);
@@ -27,16 +28,13 @@
         // $comments->username = $current_author;
         $comments->id_article = $_GET['selected_id'];
 
-
         if ($comments->Add_new_commentaire()) {
             header("Location: article_details.php?id=".$_GET['selected_id']); 
             exit();
         } else {
             echo "Error creating commentaire.";
         }
-        
     }
-
 ?>
 <!DOCTYPE html>
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
