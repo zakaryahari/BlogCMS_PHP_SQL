@@ -2,6 +2,7 @@
 
       require_once '../classes/database.php';
       require_once '../classes/user.php';
+      require_once '../classes/commentaire.php';
 
       $connection = new Database();
       $db = $connection->getconnection();
@@ -36,11 +37,16 @@
       $stmt = $db->query($sql_comment);
       $TotalPending = $stmt->fetchColumn();
 
-      $sql_Pending_Comments = "select ar.image_url , co.username , co.contenu_commentaire , ar.nom_article , co.date_commentaire from commentaire co
-      join article ar on co.id_article = ar.id_article";
+      // $sql_Pending_Comments = "select ar.image_url , co.username , co.contenu_commentaire , ar.nom_article , co.date_commentaire from commentaire co
+      // join article ar on co.id_article = ar.id_article";
 
-      $stmt = $db->query($sql_Pending_Comments);
-      $Pending_Comments = $stmt->fetchAll();
+      // $stmt = $db->query($sql_Pending_Comments);
+      $commentaire = new commentaire($db);
+      $Pending_Comments = $commentaire->getPendingComments();
+
+      if (isset($_GET['action']) && isset($_GET['id_comment'])) {
+        
+      }
       
 ?>
 <!DOCTYPE html>
@@ -329,27 +335,22 @@
                        <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           
-                          <!-- Approve Button -->
-                          <button 
-                            data-id="<?php echo $row['username']; ?>"
-                            onclick="approveComment(this)" 
-                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-green-400 focus:outline-none focus:shadow-outline-gray" 
+                          <a href="dashboard.php?action=approve&id_comment=<?php echo $row['id_commentaire']; ?>"
+                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-green-400 focus:outline-none focus:shadow-outline-gray"
                             aria-label="Approve">
                             <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                              <path d="M5 13l4 4L19 7"></path>
+                                <path d="M5 13l4 4L19 7"></path>
                             </svg>
-                          </button>
+                          </a>
 
-                          <!-- Delete Button -->
-                          <button 
-                            data-id="<?php echo $row['username']; ?>"
-                            onclick="deleteComment(this)"
-                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-red-400 focus:outline-none focus:shadow-outline-gray" 
-                            aria-label="Delete">
+                          <a href="dashboard.php?action=delete&id_comment=<?php echo $row['id_commentaire']; ?>"
+                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-red-400 focus:outline-none focus:shadow-outline-gray"
+                            aria-label="Delete"
+                            onclick="return confirm('Are you sure you want to delete this comment?');">
                             <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                             </svg>
-                          </button>
+                          </a>
 
                         </div>
                       </td>
