@@ -45,7 +45,15 @@
       $Pending_Comments = $commentaire->getPendingComments();
 
       if (isset($_GET['action']) && isset($_GET['id_comment'])) {
-        
+        $id_comment = $_GET['id_comment'];
+        if ($_GET['action'] == 'approve') {
+          $commentaire->Update_comment_status($id_comment,'approved');
+        }
+        if ($_GET['action'] == 'delete') {
+          $commentaire->Delete_comment($id_comment);
+        }
+          header("Location: dashboard.php");
+          exit();
       }
       
 ?>
