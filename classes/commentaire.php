@@ -102,6 +102,17 @@
             return [];
         }
 
+        public function getPendingComments() {
+            $sql = "SELECT co.id_commentaire , ar.image_url , co.username , co.contenu_commentaire , ar.nom_article , co.date_commentaire FROM commentaire co JOIN article ar ON co.id_article = ar.id_article WHERE co.status = 'pending' ORDER BY date_commentaire DESC ";
+            
+            $query = $this->connection->prepare($sql);
+            // $query->bindParam(":id_article", $id_article);
+            
+            if ($query->execute()) {
+                return $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return [];
+        }
         
     }
 ?>
