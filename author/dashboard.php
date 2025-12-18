@@ -20,7 +20,7 @@
     }
     $current_author = $_SESSION['username'];
 
-    $sql_MyArticles = "SELECT COUNT(*) FROM article WHERE username = :username";
+    $sql_MyArticles = "SELECT COUNT(a.id_article) FROM article a WHERE a.username = :username AND a.id_categorie IN (SELECT id_categorie FROM categorie WHERE id_categorie = a.id_categorie ) ";
     $stmt = $db->prepare($sql_MyArticles);
     $stmt->bindParam(':username', $current_author);
     $stmt->execute();
