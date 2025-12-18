@@ -98,8 +98,15 @@
             
             <?php foreach($articles as $row): ?>
             <div class="flex flex-col bg-white rounded-lg shadow-xs dark:bg-gray-800">
-                <div class="relative w-full h-48">
-                    <img class="object-cover w-full h-full rounded-t-lg" src="<?php echo !empty($row['image_url']) ? $row['image_url'] : 'assets/img/default.png'; ?>" alt="Article Image" loading="lazy" />
+                <div style="height: 400px; width: 100%; overflow: hidden; position: relative;">
+                    
+                    <img 
+                        style="width: 100%; height: 100%; object-fit: cover; object-position: center;"
+                        src="<?php echo !empty($row['image_url']) ? $row['image_url'] : 'assets/img/default.png'; ?>" 
+                        alt="Article Image" 
+                        loading="lazy" 
+                    />
+                    
                 </div>
                 
                 <div class="p-4 flex-grow">

@@ -4,6 +4,6 @@ session_unset();
 
 session_destroy();
 echo "Session destroyed.";
-header("Location: ../../pages/login.php");
+header("Location: index.php");
 exit();
 ?>
