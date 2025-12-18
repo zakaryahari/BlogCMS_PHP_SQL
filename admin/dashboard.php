@@ -10,7 +10,7 @@
       session_start();
       if (isset($_SESSION['username'])) {
         if ($_SESSION['user_role'] == 'author') {
-            header("Location: ../index.html");
+            header("Location: ../index.php");
             exit();
         }
       }
