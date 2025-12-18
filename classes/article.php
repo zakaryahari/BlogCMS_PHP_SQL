@@ -42,7 +42,7 @@
         }
 
         public function Get_Resent_article($username){
-            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie WHERE a.username = :username ORDER BY a.date_creation DESC LIMIT 5";
+            $sql = "SELECT a.*, c.libelle AS category_name FROM article a JOIN categorie c ON a.id_categorie = c.id_categorie WHERE a.username = :username ORDER BY a.date_creation DESC ";
 
             $query = $this->connection->prepare($sql);
 
