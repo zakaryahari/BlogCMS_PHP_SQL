@@ -65,14 +65,41 @@
                     </button>
                 </li>
 
-                <li class="relative">
-                    <a href="pages/login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
-                </li>
-                <li class="relative">
-                    <a href="pages/signup.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                        Create Account
-                    </a>
-                </li>
+                <?php if(isset($_SESSION['username'])): ?>
+                    <?php if($_SESSION['user_role'] == 'admin'): ?>
+                        <li class="relative">
+                            <a href="admin/dashboard.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                Admin Panel
+                            </a>
+                        </li>
+                    <?php elseif($_SESSION['user_role'] == 'author'): ?>
+                        <li class="relative">
+                            <a href="author/dashboard.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                Author Dashboard
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="relative">
+                        <a href="logout.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Logout</a>
+                    </li>
+                    
+                    <li class="relative">
+                         <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none" aria-label="Account" aria-haspopup="true">
+                            <img class="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82" alt="" aria-hidden="true" />
+                        </button>
+                    </li>
+
+                <?php else: ?>
+                    <li class="relative">
+                        <a href="login.php" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">Login</a>
+                    </li>
+                    <li class="relative">
+                        <a href="create-account.php" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                            Create Account
+                        </a>
+                    </li>
+                <?php endif; ?>
 
             </ul>
         </div>
